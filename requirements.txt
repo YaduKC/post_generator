@@ -24,7 +24,7 @@ click==7.1.2
 colorama==0.4.4
 contextvars==2.4
 cymem==2.0.6
-dataclasses==0.8
+dataclasses==0.6
 datasets==1.16.1
 decorator==4.4.2
 defusedxml==0.7.1
