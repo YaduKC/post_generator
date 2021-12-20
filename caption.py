@@ -10,6 +10,7 @@ import nltk
 nltk.download("stopwords")
 nltk.download("universal_tagset")
 import pke
+import string
 
 # For a given text as input, this class extracts keywords.
 # Unsupervised models available:
