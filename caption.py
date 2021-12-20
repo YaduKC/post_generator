@@ -6,6 +6,7 @@ from PIL import Image, ImageFilter
 from PIL import ImageDraw
 from PIL import ImageFont
 import textwrap
+import streamlit as st
 
 # For a given text as input, this class extracts keywords.
 # Unsupervised models available:
@@ -52,7 +53,7 @@ class summarizer:
         return summary
 
 def get_image(topics):
-    topic = "coffee"
+    topic = topics[0]
     images = requests.get("https://api.unsplash.com/search/photos?query="+topic+"&orientation=portrait&color=black&page=1&client_id=FBsx0gRhO0n8hRxl1yB-q1MOa0i3rgdQp1b4nUVcnCo")
     data = images.json()
     url_list = []
@@ -101,24 +102,43 @@ def create_post(description, image_name):
         img.save(destination)
         image_id += 1
 
+def generate(description):
+    state = st.text("Extracting keywords...")
 
-if __name__ == "__main__":
-    description = "Here at 80/20, we believe in food as fuel and that absolutely everybody benefits from clean, natural and unprocessed whole foods. We endeavor to serve you real, healthy, honest and delicious meals as well as nutrient packed smoothies, homemade raw desserts and damn good coffee. We wholeheartedly believe that life is all about balance, and while food is functional it should also be fun!"
-    #description = "RASHAYS has been proudly Australian family owned and operated since 1998 when owners, Rami and Shannon, opened their very first restaurant in Liverpool, NSW. This is how the name came to be - a combination of the owners' names! It's no secret that our RASHAYS Chicken with creamy mushroom sauce is a customer favourite, which is why it has been on the menu since day 1! With over 30 locations, RASHAYS is a family favourite that prides itself on amazing value, excellent service, premium locally-sourced produce and consistency across all our restaurants."
-    #description = "Big Barber Delux was established in 2009 in Canberra ACT by CEO, Cami Shoj, who has been in the Hairdressing/Barbering industry since 1981. Big Barber Delux has 23 locations throughout the ACT, NSW and VIC. More stores are planned to open in the coming years around Australia. We Believe that success comes from consistent effort, great customer service and a quality product offering. We take pride in believing that passion derives results. We are proud of what we have created at Big Barber Delux and the reputation we have built over the past years."
-    #description = "Tektorch provides startups to large enterprises - a dedicated full-service data team. Tektorch works with you whether it is to provide insights, set up your organization's data infrastructure or anything in between - we are there for you in your journey to transform your business and deliver phenomenal business impact!"
     topic_ob = keyword(description)
     topics = topic_ob.get_topics()
+
+    state.text("Extracting caption...")
 
     summary_ob = summarizer()
     summary = summary_ob.summarize(description)
     summary = summary[0].get("summary_text")
 
-    print(topics)
-    print(summary)
+    state.text("Generating post...")
+
     image_urls = get_image(topics)
     image_name = download_images(image_urls)
-    #topics = ['unprocessed whole foods', 'food', 'homemade raw desserts', 'delicious meals', 'good coffee']
-    #summary = "80/20 believes in food as fuel and that absolutely everybody benefits from clean, natural and unprocessed whole foods. We wholeheartedly believe that life is all about balance, and while food is functional it should also be fun!"
-    #image_name = ["img_0.jpg","img_1.jpg","img_2.jpg","img_3.jpg","img_4.jpg","img_5.jpg","img_6.jpg","img_7.jpg","img_8.jpg","img_9.jpg"]
     create_post(summary, image_name)
+
+    state.text("")
+
+    c1,c2,c3 = st.columns(3)
+    with c1:
+        image = Image.open("Downloads/output/"+str(0)+".png")
+        st.image(image, width = 500)
+    with c2:
+        image = Image.open("Downloads/output/"+str(1)+".png")
+        st.image(image, width = 500)
+    with c3:
+        image = Image.open("Downloads/output/"+str(2)+".png")
+        st.image(image, width = 500)
+
+if __name__ == "__main__":
+    st.set_page_config(layout="wide")
+    default = "Here at 80/20, we believe in food as fuel and that absolutely everybody benefits from clean, natural and unprocessed whole foods. We endeavor to serve you real, healthy, honest and delicious meals as well as nutrient packed smoothies, homemade raw desserts and damn good coffee. We wholeheartedly believe that life is all about balance, and while food is functional it should also be fun!"
+    st.title('Social Media Post Generator')
+    user_input = st.text_area("Enter Description here...", default, height=200)
+    submit = st.button(label="Submit")
+    if submit:
+        user_input = user_input.decode('utf-8','ignore').encode("utf-8")
+        generate(user_input)
