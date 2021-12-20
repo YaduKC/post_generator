@@ -143,5 +143,5 @@ if __name__ == "__main__":
     user_input = st.text_area("Enter Description here...", default, height=200)
     submit = st.button(label="Submit")
     if submit:
-        user_input = user_input.decode('utf-8','ignore').encode("utf-8")
+        user_input = ''.join(x for x in user_input if x in string.printable)
         generate(user_input)
