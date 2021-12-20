@@ -1,4 +1,3 @@
-import pke
 from transformers import pipeline
 import requests
 import urllib.request
@@ -8,6 +7,9 @@ from PIL import ImageFont
 import textwrap
 import streamlit as st
 import nltk
+nltk.download("stopwords")
+nltk.download("universal_tagset")
+import pke
 
 # For a given text as input, this class extracts keywords.
 # Unsupervised models available:
@@ -135,8 +137,6 @@ def generate(description):
         st.image(image, width = 500)
 
 if __name__ == "__main__":
-    nltk.download("stopwords")
-    nltk.download("universal_tagset")
     st.set_page_config(layout="wide")
     default = "Here at 80/20, we believe in food as fuel and that absolutely everybody benefits from clean, natural and unprocessed whole foods. We endeavor to serve you real, healthy, honest and delicious meals as well as nutrient packed smoothies, homemade raw desserts and damn good coffee. We wholeheartedly believe that life is all about balance, and while food is functional it should also be fun!"
     st.title('Social Media Post Generator')
