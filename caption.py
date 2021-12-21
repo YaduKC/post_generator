@@ -1,4 +1,5 @@
-from transformers import pipeline
+import os
+import openai
 import requests
 import urllib.request
 from PIL import Image, ImageFilter
@@ -6,83 +7,72 @@ from PIL import ImageDraw
 from PIL import ImageFont
 import textwrap
 import streamlit as st
-import nltk
-nltk.download("stopwords")
-nltk.download("universal_tagset")
-import pke
 import string
 
-# For a given text as input, this class extracts keywords.
-# Unsupervised models available:
-# PositionRank (Default)
-# TopicRank
-# SingleRank
-# TextRank
-# TopicalPageRank
-# MultipartiteRank
+def keywords(text):
+    openai.api_key = "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"
+    p = "Text: " + text + "\n\nKeywords:"
+    response = openai.Completion.create(
+      engine="davinci",
+      prompt=p,
+      temperature=0.3,
+      max_tokens=80,
+      top_p=1.0,
+      frequency_penalty=0.8,
+      presence_penalty=0.0,
+      stop=["\n"]
+    )
+    key = response.choices[0].get("text")
+    return list(set(key.split()))
 
-class keyword:
-    def __init__(self, description, graph_model="PositionRank", n=5):
-
-        if graph_model == "TopicRank":
-            extractor = pke.unsupervised.TopicRank()
-        elif graph_model == "SingleRank":
-            extractor = pke.unsupervised.SingleRank()
-        elif graph_model == "TextRank":
-            extractor = pke.unsupervised.TextRank()
-        elif graph_model == "TopicalPageRank":
-            extractor = pke.unsupervised.TopicalPageRank()
-        elif graph_model == "PositionRank":
-            extractor = pke.unsupervised.PositionRank()
-        elif graph_model == "MultipartiteRank":
-            extractor = pke.unsupervised.MultipartiteRank()
-
-        extractor = pke.unsupervised.PositionRank()
-        extractor.load_document(input=description)
-        extractor.candidate_selection()
-        extractor.candidate_weighting()
-        self.topics = extractor.get_n_best(n)
-
-    # Return a list of topics
-    def get_topics(self):
-        topic_list = []
-        for i in self.topics:
-            topic_list.append(i[0])
-        return topic_list
-
-class summarizer:
-    def summarize(self, description):
-        summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-        summary = summarizer(description, max_length=150, min_length=30, do_sample=False)
-        return summary
+def get_captions(text):
+    openai.api_key = "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"
+    p = "Write a creative ad for the following product to run on Social media:\n\"\"\"\"\"\"\n" + text + "\n\"\"\"\"\"\"\nThis is the ad I wrote for Social media aimed at general audience:\n\"\"\"\"\"\""
+    response = openai.Completion.create(
+      engine="davinci-instruct-beta",
+      prompt=p,
+      temperature=0.5,
+      max_tokens=50,
+      top_p=1.0,
+      frequency_penalty=0.0,
+      presence_penalty=0.0,
+      stop=["\"\"\"\"\"\""]
+    )
+    return response.choices[0].get("text")
 
 def get_image(topics):
-    topic = topics[0]
-    images = requests.get("https://api.unsplash.com/search/photos?query="+topic+"&orientation=portrait&color=black&page=1&client_id=FBsx0gRhO0n8hRxl1yB-q1MOa0i3rgdQp1b4nUVcnCo")
-    data = images.json()
     url_list = []
-    for image_url in data.get("results"):
-        urls = image_url.get("urls")
-        url_list.append(urls.get("regular"))
+    for topic in topics:
+        images = requests.get("https://api.unsplash.com/search/photos?query="+topic+"&orientation=portrait&color=black&page=1&client_id=FBsx0gRhO0n8hRxl1yB-q1MOa0i3rgdQp1b4nUVcnCo")
+        data = images.json()
+        result = data.get("results")
+        if len(result) > 0:
+            urls = result[0].get("urls")
+            url_list.append(urls.get("regular"))
+        else:
+            url_list.append(-1)
     return url_list
 
-def download_images(urls):
+def download_images(urls, topics):
     image_id = 0
     image_name = []
-    for url in urls:
-        destination = "Downloads/images/img_" + str(image_id) + ".jpg"
-        urllib.request.urlretrieve(url, destination)
-        name = "img_" + str(image_id) + ".jpg"
-        image_name.append(name)
-        image_id += 1
+    for index,url in enumerate(urls):
+        if url != -1:
+            name = topics[index] + str(image_id) + ".jpg"
+            destination = "Downloads/images/img_" + name
+            urllib.request.urlretrieve(url, destination)
+            image_name.append(name)
+            image_id += 1
     return image_name
 
 def create_post(description, image_name):
     image_id = 0
-    for image in image_name:
+    dest = []
+    for index,image in enumerate(image_name):
         # Open an Image
-        source = "Downloads/images/" + image
+        source = "Downloads/images/"+"img_" + image
         destination = "Downloads/output/" + str(image_id) + ".png"
+        dest.append(destination)
         img = Image.open(source)
         img = img.filter(ImageFilter.GaussianBlur(3))
         w,h = img.size
@@ -94,7 +84,7 @@ def create_post(description, image_name):
         myFont = ImageFont.truetype('Rubik-Italic.ttf', 70)
  
         # Add Text to an image
-        lines = textwrap.wrap(description, width=30)
+        lines = textwrap.wrap(description[index], width=30)
         w_, line_height = myFont.getsize(lines[0])
         y_text = ((17 - len(lines))/2 ) * int(line_height)
         for line in lines:
@@ -105,44 +95,57 @@ def create_post(description, image_name):
         # Save the edited image
         img.save(destination)
         image_id += 1
+    return dest
 
-def generate(description):
-    state = st.text("Extracting keywords...")
+def remove_after_use():
+    for file in os.listdir('Downloads/images/'):
+        if file.endswith('.jpg'):
+            os.remove('Downloads/images/' + file)
+    for file in os.listdir('Downloads/output/'):
+        if file.endswith('.png'):
+            os.remove('Downloads/output/' + file)
 
-    topic_ob = keyword(description)
-    topics = topic_ob.get_topics()
 
-    state.text("Extracting caption...")
-
-    summary_ob = summarizer()
-    summary = summary_ob.summarize(description)
-    summary = summary[0].get("summary_text")
-
-    state.text("Generating post...")
-
-    image_urls = get_image(topics)
-    image_name = download_images(image_urls)
-    create_post(summary, image_name)
-
-    state.text("")
-
-    c1,c2,c3 = st.columns(3)
-    with c1:
-        image = Image.open("Downloads/output/"+str(0)+".png")
-        st.image(image, width = 500)
-    with c2:
-        image = Image.open("Downloads/output/"+str(1)+".png")
-        st.image(image, width = 500)
-    with c3:
-        image = Image.open("Downloads/output/"+str(2)+".png")
-        st.image(image, width = 500)
+def display_image(image_name):
+    image = Image.open(image_name)
+    st.image(image, width = 500)
 
 if __name__ == "__main__":
-    st.set_page_config(layout="wide")
-    default = "Here at 80/20, we believe in food as fuel and that absolutely everybody benefits from clean, natural and unprocessed whole foods. We endeavor to serve you real, healthy, honest and delicious meals as well as nutrient packed smoothies, homemade raw desserts and damn good coffee. We wholeheartedly believe that life is all about balance, and while food is functional it should also be fun!"
     st.title('Social Media Post Generator')
+    default = "Here at 80/20, we believe in food as fuel and that absolutely everybody benefits from clean, natural and unprocessed whole foods. We endeavor to serve you real, healthy, honest and delicious meals as well as nutrient packed smoothies, homemade raw desserts and damn good coffee. We wholeheartedly believe that life is all about balance, and while food is functional it should also be fun!"
     user_input = st.text_area("Enter Description here...", default, height=200)
-    submit = st.button(label="Submit")
+    c1, c2 = st.columns(2)
+    submit = c1.button(label="Submit")
+    info = c2.text("")
     if submit:
+        remove_after_use()
         user_input = ''.join(x for x in user_input if x in string.printable)
-        generate(user_input)
+        info.text("Extracting Keywords...")
+        key_list = keywords(user_input)
+        info.text("Downloading images...")
+        image_url = get_image(key_list)
+        image_names = download_images(image_url, key_list)
+        info.text("Generating captions...")
+        captions = []
+        for key in key_list:
+            new_cap = get_captions(user_input)
+            unwanted = new_cap.find("This is the ad")
+            unwanted = new_cap.find("The ad")
+            if unwanted != -1:
+                captions.append(new_cap[0:unwanted])
+            else:
+                captions.append(new_cap)
+        info.text("Creating posts...")
+        output_list = create_post(captions, image_names)
+        for i in output_list:
+            display_image(i)
+        info.text("Done...")
+        
+   
+
+
+    
+
+
+
+    
