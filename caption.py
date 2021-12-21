@@ -81,7 +81,7 @@ def create_post(description, images):
         myFont = ImageFont.truetype(BytesIO(req.content), 70)
  
         # Add Text to an image
-        lines = textwrap.wrap(description[index], width=50)
+        lines = textwrap.wrap(description[index], width=10)
         w_, line_height = myFont.getsize(lines[0])
         y_text = ((17 - len(lines))/2 ) * int(line_height)
         for line in lines:
