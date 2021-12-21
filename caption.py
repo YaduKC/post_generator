@@ -83,7 +83,7 @@ def create_post(description, images):
         # Add Text to an image
         lines = textwrap.wrap(description[index], width=30)
         w_, line_height = myFont.getsize(lines[0])
-        y_text = ((17 - len(lines))/2 ) * int(line_height)
+        y_text = ((12 - len(lines))/2 ) * int(line_height)
         for line in lines:
             width, height = myFont.getsize(line)
             I1.text(((w-width)/2, y_text), line, font=myFont, fill =(255, 255, 255))
