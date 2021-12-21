@@ -76,7 +76,7 @@ def create_post(description, images):
         I1 = ImageDraw.Draw(img)
  
         # Custom font style and font size
-        myFont = ImageFont.load_default()
+        myFont = ImageFont.truetype('arial.ttf', 70)
  
         # Add Text to an image
         lines = textwrap.wrap(description[index], width=30)
