@@ -76,7 +76,7 @@ def create_post(description, images):
         I1 = ImageDraw.Draw(img)
  
         # Custom font style and font size
-        req = requests.get("https://github.com/google/fonts/blob/main/apache/montez/Montez-Regular.ttf?raw=true")
+        req = requests.get("https://github.com/google/fonts/blob/main/apache/opensans/OpenSans-Italic%5Bwdth%2Cwght%5D.ttf?raw=true")
 
         myFont = ImageFont.truetype(BytesIO(req.content), 70)
  
