@@ -11,7 +11,7 @@ import string
 from io import BytesIO
 
 def keywords(text):
-    openai.api_key = "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"
+    openai.api_key = st.secrets["OPENAI_KEY"]
     p = "Text: " + text + "\n\nKeywords:"
     response = openai.Completion.create(
       engine="davinci",
@@ -27,7 +27,7 @@ def keywords(text):
     return list(set(key.split()))
 
 def get_captions(text):
-    openai.api_key = "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"
+    openai.api_key = st.secrets["OPENAI_KEY"]
     p = "Write a creative ad for the following product to run on Social media:\n\"\"\"\"\"\"\n" + text + "\n\"\"\"\"\"\"\nThis is the ad I wrote for Social media aimed at general audience:\n\"\"\"\"\"\""
     response = openai.Completion.create(
       engine="davinci-instruct-beta",
@@ -44,7 +44,8 @@ def get_captions(text):
 def get_image(topics):
     url_list = []
     for topic in topics:
-        images = requests.get("https://api.unsplash.com/search/photos?query="+topic+"&orientation=portrait&color=black&page=1&client_id=FBsx0gRhO0n8hRxl1yB-q1MOa0i3rgdQp1b4nUVcnCo")
+        key = st.secrets["UNSPLASH_KEY"]
+        images = requests.get("https://api.unsplash.com/search/photos?query="+topic+"&orientation=portrait&color=black&page=1&client_id=" + key)
         data = images.json()
         result = data.get("results")
         if len(result) > 0:
