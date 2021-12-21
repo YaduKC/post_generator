@@ -76,7 +76,9 @@ def create_post(description, images):
         I1 = ImageDraw.Draw(img)
  
         # Custom font style and font size
-        myFont = ImageFont.truetype('arial.ttf', 70)
+        req = requests.get("https://github.com/google/fonts/blob/main/apache/robotomono/RobotoMono%5Bwght%5D.ttf?raw=true")
+
+        myFont = ImageFont.truetype(BytesIO(req.content), 70)
  
         # Add Text to an image
         lines = textwrap.wrap(description[index], width=30)
