@@ -76,12 +76,12 @@ def create_post(description, images):
         I1 = ImageDraw.Draw(img)
  
         # Custom font style and font size
-        req = requests.get("https://github.com/google/fonts/blob/main/apache/robotomono/RobotoMono%5Bwght%5D.ttf?raw=true")
+        req = requests.get("https://github.com/google/fonts/blob/main/apache/montez/Montez-Regular.ttf?raw=true")
 
         myFont = ImageFont.truetype(BytesIO(req.content), 70)
  
         # Add Text to an image
-        lines = textwrap.wrap(description[index], width=10)
+        lines = textwrap.wrap(description[index], width=30)
         w_, line_height = myFont.getsize(lines[0])
         y_text = ((17 - len(lines))/2 ) * int(line_height)
         for line in lines:
