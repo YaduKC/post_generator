@@ -15,9 +15,11 @@ cffi==1.15.0
 charset-normalizer==2.0.9
 click==7.1.2
 colorama==0.4.4
+dataclasses==0.8
 decorator==5.1.0
 defusedxml==0.7.1
 entrypoints==0.3
+fonts==0.0.3
 gitdb==4.0.9
 GitPython==3.1.18
 idna==3.3
@@ -62,6 +64,8 @@ pyrsistent==0.18.0
 python-dateutil==2.8.2
 pytz==2021.3
 pytz-deprecation-shim==0.1.0.post0
+pywin32==303
+pywinpty==1.1.6
 pyzmq==22.3.0
 requests==2.26.0
 Send2Trash==1.8.0
