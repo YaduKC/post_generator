@@ -454,7 +454,7 @@ def main_page():
 
             
 
-def product_description():
+def product_description_():
     product_description_placeholder = st.empty()
     st.session_state.page_placeholder_["product_description_page"] = product_description_placeholder
     with product_description_placeholder.container():
@@ -832,7 +832,7 @@ if __name__ == "__main__":
         if st.session_state.curr_tool_ == "Product Description":
             st.session_state.page_placeholder_["main_page"].empty()
             print("succ")
-            product_description()
+            product_description_()
         elif st.session_state.curr_tool_ == "Tagline Generator":
             st.session_state.page_placeholder_["main_page"].empty()
             tagline_generator()
