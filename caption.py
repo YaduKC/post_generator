@@ -1,9 +1,16 @@
 import streamlit as st
 from streamlit_quill import st_quill
-from api import open_ai
+import openai
+import requests
+from google.cloud import storage
+from PIL import Image
+import io
+from imgix import UrlBuilder
 
 username = "test"
 password = "1234"
+openai.api_key = "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"
+url = UrlBuilder("captionai.imgix.net", include_library_param=False)
 
 if 'login_' not in st.session_state:
     st.session_state.login_ = False
@@ -307,6 +314,70 @@ font_options = [
 		"Zapfino"
 	]
 
+def imgix_url(image="~text", param={}):
+        return url.create_url(image, param)
+
+def product_description(description, name, num_responses=1):
+        desc = []
+        for i in range(num_responses):
+            response = openai.Completion.create(
+                engine="davinci-instruct-beta-v3",
+                prompt="Write a fake marketting for a product called \""+name+"\" \n\""+description+"\".",
+                temperature=1.0,
+                max_tokens=200,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+            desc.append(response.choices[0].get("text").strip("\n"))
+        return desc
+
+def tagline(description, name, num_responses=1):
+        taglines = []
+        for i in range(num_responses):
+            response = openai.Completion.create(
+              engine="davinci-instruct-beta-v3",
+              prompt="Write a tagline for the business named \"" + name + "\" using the description given below.\n\""+description+"\"",
+              temperature=1,
+              max_tokens=64,
+              top_p=1,
+              frequency_penalty=0,
+              presence_penalty=0
+            )
+            taglines.append( "\"" + response.choices[0].get("text").strip("\n") + "\"")
+        return taglines
+
+def hashtag(description, num_responses=1):
+    hashtags = []
+    for i in range(num_responses):
+        response = openai.Completion.create(
+            engine="davinci-instruct-beta-v3",
+            prompt="Write 10 hashtags for social media using the description given below.\n\""+description+"\"",
+            temperature=0.7,
+            max_tokens=64,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        hashtags.append(response.choices[0].get("text").strip("\n"))
+    return hashtags
+
+def header(description, demography, intent, tone, name):
+
+    if intent[0] == "Convince": intent = "convincing"
+    elif intent[0] == "Inform": intent = "informative"
+    elif intent[0] == "Describe": intent = "descriptive"
+
+    response = openai.Completion.create(
+        engine="davinci-instruct-beta-v3",
+        prompt="Write a 60 word"+ intent +" advertisement for "+ demography[0] +" with an "+ tone[0] +" tone using the description given below for the business named \"" + name + "\".\n\""+description+"\"",
+        temperature=0.7,
+        max_tokens=100,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    return "\"" + response.choices[0].get("text").strip("\n") + "\""
 
 def login_page():
     login_placeholder = st.empty()
@@ -438,7 +509,7 @@ def product_description():
         if generate:
             with c2.container():
                 with st.spinner('Processing...'):
-                    st.session_state.product_desc_list_ += op.product_description(desc,name,2)
+                    st.session_state.product_desc_list_ += product_description(desc,name,2)
         with st.container():
             c1,c2,c3 = st.columns([1,1,1])
             c1.text("")
@@ -461,7 +532,7 @@ def product_description():
                 if more:
                     with c2.container():
                         with st.spinner('Processing...'):
-                            st.session_state.product_desc_list_ += op.product_description(desc,name,2)
+                            st.session_state.product_desc_list_ += product_description(desc,name,2)
                         st.experimental_rerun()
 
         st.markdown("""---""")
@@ -520,7 +591,7 @@ def tagline_generator():
         if generate:
             with c2.container():
                 with st.spinner('Processing...'):
-                    st.session_state.tagline_list_ += op.tagline(desc,name,2)
+                    st.session_state.tagline_list_ += tagline(desc,name,2)
         with st.container():
             c1,c2,c3 = st.columns([1,1,1])
             c1.text("")
@@ -543,7 +614,7 @@ def tagline_generator():
                 if more:
                     with c2.container():
                         with st.spinner('Processing...'):
-                            st.session_state.tagline_list_ +=  op.tagline(desc,name,2)
+                            st.session_state.tagline_list_ +=  tagline(desc,name,2)
                         st.experimental_rerun()
 
         st.markdown("""---""")
@@ -601,7 +672,7 @@ def hashtag_generator():
         if generate:
             with c2.container():
                 with st.spinner('Processing...'):
-                    st.session_state.hashtag_list_ += op.hashtag(desc, 2)
+                    st.session_state.hashtag_list_ += hashtag(desc, 2)
         with st.container():
             c1,c2,c3 = st.columns([1,1,1])
             c1.text("")
@@ -624,7 +695,7 @@ def hashtag_generator():
                 if more:
                     with c2.container():
                         with st.spinner('Processing...'):
-                            st.session_state.hashtag_list_ += op.hashtag(desc, 2)
+                            st.session_state.hashtag_list_ += hashtag(desc, 2)
                         st.experimental_rerun()
 
         st.markdown("""---""")
@@ -675,7 +746,7 @@ def post_generator():
         if generate:
             with c1.container():
                 with st.spinner('Processing...'):
-                    st.session_state.post_list_.append({"d":op.header(desc,demography,intent,tone,p_name),"t":op.tagline(desc,p_name)[0],"h":op.hashtag(desc)[0]})
+                    st.session_state.post_list_.append({"d":header(desc,demography,intent,tone,p_name),"t":tagline(desc,p_name)[0],"h":hashtag(desc)[0]})
 
         with st.container():
             c1,c2,c3 = st.columns([1,1,1])
@@ -701,7 +772,7 @@ def post_generator():
                 if more:
                     with c2.container():
                         with st.spinner('Processing...'):
-                            st.session_state.post_list_.append({"d":op.header(desc,demography,intent,tone,p_name),"t":op.tagline(desc,p_name)[0],"h":op.hashtag(desc)[0]})
+                            st.session_state.post_list_.append({"d":header(desc,demography,intent,tone,p_name),"t":tagline(desc,p_name)[0],"h":hashtag(desc)[0]})
                         st.experimental_rerun()
 
                 st.markdown("""---""")
@@ -746,17 +817,11 @@ def post_generator():
                                  "h":1080,
                                  "bg":bg
                                  }
-                        c3.image(op.imgix_url(param=param), width = 900)
+                        c3.image(imgix_url(param=param), width = 900)
                     st.markdown("""---""")
-
-            
-        
- 
-
 
 
 if __name__ == "__main__":
-    op = open_ai()
     st.set_page_config(layout="wide")
     if not st.session_state.login_:
         login_page()
