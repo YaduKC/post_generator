@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "insight-generator-tektorch",
+  "private_key_id": "1d30fe96369e03dd9877753642a3b934623b407d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQCzs6wXuqyEFokX\nRAjVlgIVIsZ/f/mCrTAwaUn0a2bGuxlYSKHHRzjBMu8kss3zmC5v2V0BxZRLGmNo\n1tFAn8F9zCNuhPT8fsqEU+3K8OcWIMjYmTSRDwRDXADgF3e0R80+xb5Hc07TCrpW\nHDkEZAf26GBoYtPQQO1kFjWBDN2xNNPcGkdZpy+h4XO8MUR6yHhZSQ5noUpa6xp9\nS6a0uwnhEbpAro/p5uywC7CrKQ3PNWiJQ71AIH1qlnexDi9Pe6eDYIJXf33ReI4i\nN+uDmCt6lAEZAOdPz8gqjLckucL7KYksfAo7EecAPAyyU/oEqEIw64zMdfMrnlfZ\nE6IyYcv5AgMBAAECgf89a6vmcGeGvi0dRqO+XQdZMgmmipc9kvRll5cvc4YtZsXC\n5xBkjHNZlY8ne/XozJsSn7iqYl3NTbesnb/n1rLLzHpPzCHwK2YM1KLyOmTBq3L6\nlWLiMb/DRi8GaP8BH4mHaw8eXMsUVxZZWEwktAwE2GgbRawgAhEhpHWlJkCf0Fn8\nYc7qLWAXguctRWdAzgDkgM4l+AyEkeP7pPKTRTTmMarzwYw/+cMi5928ck0WGHb5\nf0BB4mSh7iw57FxEZg4FwwSTR/lQmP/l2plg8OcxENUBIr1YTCs+4i2RzGG/WU9A\nmdxF9ZcGSKAR2HQw+3KR2+mBcLxjnB9OeJqGJScCgYEA/OIs5ECse4061ZBydeHH\nSX5ie3YpOTQS9F7GaOt3fjQdjpHf71z+uqbiUowm5ICsQSYpx6Li1Xo9L44qxmvZ\nAkCC/Lb54Es+XhxjFlgRne0A7iZPsznwNf/32ow5ve3OTpt760SIj0XZ+ZmHqgOA\n8xZDWnBtiVJdP+w3atdSM28CgYEAteqdiENxzxZx+FFFJ8LRnur5AyPd49eApTus\n8RM7aBIufSzV8P16chLo/p7TPbDZdi0WX6iMNclePXAjhZbPDVrOxngmYrquS9SF\n2ODNaJfn2bD1PmHVSlwqS+kGvrNyd7XVXjvRbEFV7vRP5pIp1BJyH70DUXqertgb\nYcr5IxcCgYA2JPcXqAFGMub18weO1dilk7niVVpeNRgZ2nEA5emfy+jILdOUnISt\n0i2DHx70rdgz2sf3RpjqvFF9bSMbeNvt74IcOdEmhPXFkK5milS7S5N3ahyGc1FL\nPpMC6CM010Xk7sWJihLzGjGhj43MiROC+LFTG99YF5p/pUP4TEH9YQKBgBiS8ebX\nXYdg+9JUgCgH3DNAgJTZAn9lvB4V+p2yQGMlmZwVM21TgHfqcAj9QYHi4u1g19Xi\nOdaGNjHMdS/1mFCwhKAw2NabazIZKl+KtpS7eHliuy5LHvnli10nxF58dSkQqhsJ\nr5eVF9uoqyZ1disMttfsu4cFLmxmCwTh21fPAoGBANctIYdvYgvq29ofj/VNmaCc\n7CTffJ9DyG3p1brreKtJ8ZofdurbZGCQcp0FwwOa8QdbNxYl6LTc5xCWS9b+15Bw\n0Sk81btJvmw7FNdEXpRnaarxhQ++rca5jufeQh3G3Y3V+UBBjo0CQXOknqSZ+U03\nlBClAu0+ATBq/Z0imo0X\n-----END PRIVATE KEY-----\n",
+  "client_email": "insight-generator-transcriber@insight-generator-tektorch.iam.gserviceaccount.com",
+  "client_id": "114185753702771703912",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/insight-generator-transcriber%40insight-generator-tektorch.iam.gserviceaccount.com"
+}
