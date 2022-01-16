@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_quill import st_quill
 from api import open_ai
 
-username = "Yadu"
+username = "test"
 password = "1234"
 
 if 'login_' not in st.session_state:
