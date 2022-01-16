@@ -9,7 +9,7 @@ from imgix import UrlBuilder
 
 username = "test"
 password = "1234"
-openai.api_key = "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"
+openai.api_key = "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"
 url = UrlBuilder("captionai.imgix.net", include_library_param=False)
 
 if 'login_' not in st.session_state:
