@@ -873,11 +873,11 @@ def post_generator():
                                  "w":1000,
                                  "h":1080,
                                  }
-                        text_url_1 = op.imgix_url(param=text_param_1)
-                        text_url_2 = op.imgix_url(param=text_param_2)
-                        text_url_3 = op.imgix_url(param=text_param_3)
-                        text_url_4 = op.imgix_url(param=text_param_4)
-                        text_url_5 = op.imgix_url(param=text_param_5)
+                        text_url_1 = imgix_url(param=text_param_1)
+                        text_url_2 = imgix_url(param=text_param_2)
+                        text_url_3 = imgix_url(param=text_param_3)
+                        text_url_4 = imgix_url(param=text_param_4)
+                        text_url_5 = imgix_url(param=text_param_5)
 
                         img_param_1 = {"blend":text_url_1,
                                     "blend-mode":"normal",
