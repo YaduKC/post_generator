@@ -10,7 +10,7 @@ from imgix import UrlBuilder
 username = "test"
 password = "1234"
 openai.api_key = st.secrets["OPENAI_KEY"]
-url = UrlBuilder("captionai.imgix.net", include_library_param=False)
+url = UrlBuilder("captiondemo.imgix.net", include_library_param=False)
 
 if 'login_' not in st.session_state:
     st.session_state.login_ = False
@@ -819,6 +819,98 @@ def post_generator():
                                  }
                         c3.image(imgix_url(param=param), width = 900)
                     st.markdown("""---""")
+                    with st.container():
+                        st.header("Preset Templates")
+                        c1,c2,c3 = st.columns([2,4,2.2])
+                        c1.text("")
+                        c3.text("")
+                        text_param_1 = {"txt":tagline_,
+                                 "txt-size":120,
+                                 "txt-fit":"max",
+                                 "txt-font":"Trebuchet MS,Bold",
+                                 "txt-align":"middle,center",
+                                 "txt-color":"#000000",
+                                 "w":1080,
+                                 "h":1080,
+                                 }
+                        text_param_2 = {"txt":tagline_,
+                                 "txt-size":110,
+                                 "txt-fit":"max",
+                                 "txt-font":"Helvetica Neue,BoldItalic",
+                                 "txt-align":"middle,left",
+                                 "txt-line":5,
+                                 "txt-line-color":"#FFFFFF",
+                                 "txt-color":"#611DB3",
+                                 "w":900,
+                                 "h":1080,
+                                 }
+                        text_param_3 = {"txt":tagline_,
+                                 "txt-size":120,
+                                 "txt-fit":"max",
+                                 "txt-font":"Verdana,Bold",
+                                 "txt-align":"middle,center",
+                                 "txt-color":"#FFFFFF",
+                                 "w":1080,
+                                 "h":1080,
+                                 }
+                        text_param_4 = {"txt":tagline_,
+                                 "txt-size":124,
+                                 "txt-fit":"max",
+                                 "txt-font":"Helvetica Neue,BoldItalic",
+                                 "txt-align":"middle",
+                                 "txt-line":6,
+                                 "txt-line-color":"#FF9800",
+                                 "txt-color":"#FFFFFF",
+                                 "w":1080,
+                                 "h":1080,
+                                 }
+                        text_param_5 = {"txt":tagline_,
+                                 "txt-size":110,
+                                 "txt-fit":"max",
+                                 "txt-font":"Futura-Medium",
+                                 "txt-align":"middle",
+                                 "txt-color":"#000000",
+                                 "w":1000,
+                                 "h":1080,
+                                 }
+                        text_url_1 = op.imgix_url(param=text_param_1)
+                        text_url_2 = op.imgix_url(param=text_param_2)
+                        text_url_3 = op.imgix_url(param=text_param_3)
+                        text_url_4 = op.imgix_url(param=text_param_4)
+                        text_url_5 = op.imgix_url(param=text_param_5)
+
+                        img_param_1 = {"blend":text_url_1,
+                                    "blend-mode":"normal",
+                                    "blend-x":40,
+                                    "blend-y":-50}
+
+                        img_param_2 = {"blend":text_url_2,
+                                    "blend-mode":"normal",
+                                    "blend-x":1000,
+                                    "blend-y":-50}
+
+                        img_param_3 = {"blend":text_url_3,
+                                    "blend-mode":"normal",
+                                    "blend-x":40,
+                                    "blend-y":-50}
+
+                        img_param_4 = {"blend":text_url_4,
+                                    "blend-mode":"normal"}
+
+                        img_param_5 = {"blend":text_url_5,
+                                    "blend-mode":"normal",
+                                    "blend-x":40,
+                                    "blend-y":-50}
+
+                        img_param_list = [img_param_1, img_param_2, img_param_3, img_param_4, img_param_5]
+                        for i in range(5):
+                            with c2.container():
+                                st.markdown("""---""")
+                                st.subheader("Template "+str(i+1))
+                                image = "d"+str(i+2)+".png"
+                                st.image(imgix_url(image=image, param=img_param_list[i]), width = 1000)
+                        c2.markdown("""---""")
+
 
 
 if __name__ == "__main__":
@@ -831,7 +923,6 @@ if __name__ == "__main__":
             main_page()
         if st.session_state.curr_tool_ == "Product Description":
             st.session_state.page_placeholder_["main_page"].empty()
-            print("succ")
             product_description_()
         elif st.session_state.curr_tool_ == "Tagline Generator":
             st.session_state.page_placeholder_["main_page"].empty()
