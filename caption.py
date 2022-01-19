@@ -841,6 +841,7 @@ def post_generator():
                             st.session_state.curr_img_ += 1
                             if st.session_state.curr_img_ == 7:
                                 st.session_state.curr_img_ = 2
+                            st.experimental_rerun()
                     st.markdown("""---""")
                     with st.container():
                         st.header("Preset Templates")
