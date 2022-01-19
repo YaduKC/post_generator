@@ -808,9 +808,10 @@ def post_generator():
                         outline_color = c1.color_picker('Outline Color', '#ffffff')   
                         text_color = c1.color_picker('Text Color', '#000000')
                         #bg = c1.color_picker('Background Color', '#000000')
-                        #rot = c2.slider(label="Rotation", min_value=0, max_value=359, value=0)
                         x_pos = c2.slider(label="X Position", min_value=-1000, max_value=1000, value=0)
                         y_pos = c2.slider(label="Y Position", min_value=-1000, max_value=1000, value=0)
+                        rot = c2.slider(label="Rotation", min_value=0, max_value=359, value=0)
+                        scale = c2.slider(label="Scale", min_value=0, max_value=100, value=50)
                         alpha = c2.slider(label="Alpha", min_value=0, max_value=100, value=100)
                         param = {"txt":tagline_,
                                  "txt-size":font_size,
@@ -828,11 +829,13 @@ def post_generator():
                                  }
                                  
                         text_url = imgix_url(param=param)
-                        img_param = {"blend":text_url,
-                                    "blend-mode":"normal",
-                                    "blend-x":x_pos,
-                                    "blend-y":y_pos,
-                                    "blend-alpha":alpha}
+                        img_param = {"mark":text_url,
+                                    #"blend-mode":"normal",
+                                    "mark-x":x_pos,
+                                    "mark-y":y_pos,
+                                    "mark-alpha":alpha,
+                                    "mark-rot":rot,
+                                    "mark-scale":scale}
 
                         curr_im = "d"+str(st.session_state.curr_img_)+".png"
                         c3.image(imgix_url(image=curr_im, param=img_param), width = 900)
