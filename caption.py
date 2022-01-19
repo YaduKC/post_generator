@@ -42,6 +42,9 @@ if 'post_select_' not in st.session_state:
 if 'edit_val_' not in st.session_state:
     st.session_state.edit_val_ = ""
 
+if 'curr_img_' not in st.session_state:
+    st.session_state.curr_img_ = 2
+
 font_options = [
         "Arial,BoldMT",
 		"serif",
@@ -792,9 +795,10 @@ def post_generator():
                     st.markdown("""---""")
                     with st.container():
                         st.header("Customize Tagline")
-                        c1,c2,c3 = st.columns([4,1,8])
-                        c2.text("")
-                        
+                        c1,c2,c3 = st.columns([1,1,2])
+                        c1.subheader("Text Customization")
+                        c2.subheader("Text Allignment")
+                        c3.subheader("Preview")
                         tagline_ = c1.text_area(label="Tagline", value = st.session_state.post_select_["t"].upper())
                         font = c1.selectbox(label="Select Font", options=font_options)
                         align = c1.multiselect(label="Text Align", options=["top","middle","bottom","left","center","right"], default=["middle","center"])
@@ -803,7 +807,11 @@ def post_generator():
                         text_shadow = c1.slider(label="Text Shadow", min_value=0, max_value=10, value = 0)
                         outline_color = c1.color_picker('Outline Color', '#ffffff')   
                         text_color = c1.color_picker('Text Color', '#000000')
-                        bg = c1.color_picker('Background Color', '#000000')
+                        #bg = c1.color_picker('Background Color', '#000000')
+                        #rot = c2.slider(label="Rotation", min_value=0, max_value=359, value=0)
+                        x_pos = c2.slider(label="X Position", min_value=-1000, max_value=1000, value=0)
+                        y_pos = c2.slider(label="Y Position", min_value=-1000, max_value=1000, value=0)
+                        alpha = c2.slider(label="Alpha", min_value=0, max_value=100, value=100)
                         param = {"txt":tagline_,
                                  "txt-size":font_size,
                                  "txt-fit":"max",
@@ -815,9 +823,24 @@ def post_generator():
                                  "txt-color":text_color,
                                  "w":1080,
                                  "h":1080,
-                                 "bg":bg
+                                 #"bg":bg,
+                                 #"rot":rot
                                  }
-                        c3.image(imgix_url(param=param), width = 900)
+                                 
+                        text_url = imgix_url(param=param)
+                        img_param = {"blend":text_url,
+                                    "blend-mode":"normal",
+                                    "blend-x":x_pos,
+                                    "blend-y":y_pos,
+                                    "blend-alpha":alpha}
+
+                        curr_im = "d"+str(st.session_state.curr_img_)+".png"
+                        c3.image(imgix_url(image=curr_im, param=img_param), width = 900)
+                        next_template = c3.button(label="Next Template")
+                        if next_template:
+                            st.session_state.curr_img_ += 1
+                            if st.session_state.curr_img_ == 7:
+                                st.session_state.curr_img_ = 2
                     st.markdown("""---""")
                     with st.container():
                         st.header("Preset Templates")
